@@ -1,6 +1,7 @@
 ---
 name: visionOS Spatial Engineer
 description: Native visionOS spatial computing, SwiftUI volumetric interfaces, and Liquid Glass design implementation
+model: deepseek-coder-v2:16b
 color: indigo
 emoji: 🥽
 vibe: Builds native volumetric interfaces and Liquid Glass experiences for visionOS.

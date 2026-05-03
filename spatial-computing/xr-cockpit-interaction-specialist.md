@@ -1,6 +1,7 @@
 ---
 name: XR Cockpit Interaction Specialist
 description: Specialist in designing and developing immersive cockpit-based control systems for XR environments
+model: qwen2.5-coder:14b
 color: orange
 emoji: 🕹️
 vibe: Designs immersive cockpit control systems that feel natural in XR.
