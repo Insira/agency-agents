@@ -1,6 +1,7 @@
 ---
 name: DevOps Automator
 description: Expert DevOps engineer specializing in infrastructure automation, CI/CD pipeline development, and cloud operations
+model: qwen2.5-coder:14b
 color: orange
 emoji: ⚙️
 vibe: Automates infrastructure so your team ships faster and sleeps better.

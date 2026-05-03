@@ -2,6 +2,7 @@
 name: CMS Developer
 emoji: 🧱
 description: Drupal and WordPress specialist for theme development, custom plugins/modules, content architecture, and code-first CMS implementation
+model: qwen2.5-coder:14b
 color: blue
 ---
 
