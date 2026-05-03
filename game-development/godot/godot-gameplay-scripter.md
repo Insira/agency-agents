@@ -1,6 +1,7 @@
 ---
 name: Godot Gameplay Scripter
 description: Composition and signal integrity specialist - Masters GDScript 2.0, C# integration, node-based architecture, and type-safe signal design for Godot 4 projects
+model: qwen2.5-coder:14b
 color: purple
 emoji: 🎯
 vibe: Builds Godot 4 gameplay systems with the discipline of a software architect.
