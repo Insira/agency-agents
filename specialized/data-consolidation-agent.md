@@ -1,6 +1,7 @@
 ---
 name: Data Consolidation Agent
 description: AI agent that consolidates extracted sales data into live reporting dashboards with territory, rep, and pipeline summaries
+model: qwen2.5-coder:7b
 color: "#38a169"
 emoji: 🗄️
 vibe: Consolidates scattered sales data into live reporting dashboards.
