@@ -112,6 +112,8 @@ convert_antigravity() {
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
+  model_val="$(get_field "model" "$file")"
+  model_line="${model_val:+"model: $model_val"$'\n'}"
   slug="agency-$(slugify "$name")"
   body="$(get_body "$file")"
 
@@ -124,7 +126,7 @@ convert_antigravity() {
 ---
 name: ${slug}
 description: ${description}
-risk: low
+${model_line}risk: low
 source: community
 date_added: '${TODAY}'
 ---
@@ -134,10 +136,12 @@ HEREDOC
 
 convert_gemini_cli() {
   local file="$1"
-  local name description slug outdir outfile body
+  local name description slug outdir outfile body model_val model_line
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
+  model_val="$(get_field "model" "$file")"
+  model_line="${model_val:+"model: $model_val"$'\n'}"
   slug="$(slugify "$name")"
   body="$(get_body "$file")"
 
@@ -150,7 +154,7 @@ convert_gemini_cli() {
 ---
 name: ${slug}
 description: ${description}
----
+${model_line}---
 ${body}
 HEREDOC
 }
@@ -201,10 +205,12 @@ resolve_opencode_color() {
 
 convert_opencode() {
   local file="$1"
-  local name description color slug outfile body
+  local name description color slug outfile body model_val model_name_line
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
+  model_val="$(get_field "model" "$file")"
+  model_name_line="${model_val:+"model: $model_val"$'\n'}"
   color="$(resolve_opencode_color "$(get_field "color" "$file")")"
   slug="$(slugify "$name")"
   body="$(get_body "$file")"
@@ -218,7 +224,7 @@ convert_opencode() {
 ---
 name: ${name}
 description: ${description}
-mode: subagent
+${model_name_line}mode: subagent
 color: '${color}'
 ---
 ${body}
@@ -227,10 +233,12 @@ HEREDOC
 
 convert_cursor() {
   local file="$1"
-  local name description slug outfile body
+  local name description slug outfile body model_val model_line
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
+  model_val="$(get_field "model" "$file")"
+  model_line="${model_val:+"model: $model_val"$'\n'}"
   slug="$(slugify "$name")"
   body="$(get_body "$file")"
 
@@ -241,7 +249,7 @@ convert_cursor() {
   cat > "$outfile" <<HEREDOC
 ---
 description: ${description}
-globs: ""
+${model_line}globs: ""
 alwaysApply: false
 ---
 ${body}
@@ -250,11 +258,12 @@ HEREDOC
 
 convert_openclaw() {
   local file="$1"
-  local name description slug outdir body
-  local soul_content="" agents_content=""
+  local name description slug outdir body model_val model_line
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
+  model_val="$(get_field "model" "$file")"
+  model_line="${model_val:+"Model: $model_val"$'\n'}"
   slug="$(slugify "$name")"
   body="$(get_body "$file")"
 
@@ -267,7 +276,7 @@ convert_openclaw() {
   # SOUL keywords: identity, learning & memory, communication, style,
   #   critical rules, rules you must follow
   # AGENTS keywords: everything else (mission, deliverables, workflow, etc.)
-
+  #
   local current_target="agents"  # default bucket
   local current_section=""
 
@@ -308,7 +317,7 @@ convert_openclaw() {
     if [[ "$current_target" == "soul" ]]; then
       soul_content+="$current_section"
     else
-      agents_content+="$current_section"
+      agents_else_content+="$current_section"
     fi
   fi
 
@@ -319,7 +328,7 @@ HEREDOC
 
   # Write AGENTS.md — mission, deliverables, workflow
   cat > "$outdir/AGENTS.md" <<HEREDOC
-${agents_content}
+${agents_else_content}
 HEREDOC
 
   # Write IDENTITY.md — emoji + name + vibe from frontmatter, fallback to description
@@ -342,11 +351,13 @@ HEREDOC
 
 convert_qwen() {
   local file="$1"
-  local name description tools slug outfile body
+  local name description tools slug outfile body model_val model_line
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
   tools="$(get_field "tools" "$file")"
+  model_val="$(get_field "model" "$file")"
+  model_line="${model_val:+"model: $model_val"$'\n'}"
   slug="$(slugify "$name")"
   body="$(get_body "$file")"
 
@@ -356,31 +367,33 @@ convert_qwen() {
   # Qwen Code SubAgent format: .md with YAML frontmatter in ~/.qwen/agents/
   # name and description required; tools optional (only if present in source)
   if [[ -n "$tools" ]]; then
-    cat > "$outfile" <<HEREDOC
+    cat > "$outfile" <<HEREDOG
 ---
 name: ${slug}
 description: ${description}
-tools: ${tools}
+${model_line}tools: ${tools}
 ---
 ${body}
-HEREDOC
+HEREDOG
   else
-    cat > "$outfile" <<HEREDOC
+    cat > "$outfile" <<HEREDOG
 ---
 name: ${slug}
 description: ${description}
----
+${model_line}---
 ${body}
-HEREDOC
+HEREDOG
   fi
 }
 
 convert_kimi() {
   local file="$1"
-  local name description slug outdir agent_file body
+  local name description slug outdir agent_file body model_val model_line
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
+  model_val="$(get_field "model" "$file")"
+  model_line="${model_val:+"model: $model_val"$'\n'}"
   slug="$(slugify "$name")"
   body="$(get_body "$file")"
 
@@ -394,7 +407,8 @@ convert_kimi() {
 version: 1
 agent:
   name: ${slug}
-  extend: default
+  description: ${description}
+${model_line}  extend: default
   system_prompt_path: ./system.md
 HEREDOC
 
@@ -403,7 +417,7 @@ HEREDOC
 # ${name}
 
 ${description}
-
+${model_line}
 ${body}
 HEREDOC
 }
@@ -440,10 +454,12 @@ HEREDOC
 
 accumulate_aider() {
   local file="$1"
-  local name description body
+  local name description body model_val model_line
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
+  model_val="$(get_field "model" "$file")"
+  model_line="${model_val:+"Model: $model_val"$'\n'}"
   body="$(get_body "$file")"
 
   cat >> "$AIDER_TMP" <<HEREDOC
@@ -453,28 +469,28 @@ accumulate_aider() {
 ## ${name}
 
 > ${description}
-
+${model_line}
 ${body}
 HEREDOC
 }
 
 accumulate_windsurf() {
   local file="$1"
-  local name description body
+  local name description body model_val model_line
 
   name="$(get_field "name" "$file")"
   description="$(get_field "description" "$file")"
+  model_val="$(get_field "model" "$file")"
+  model_line="${model_val:+"Model: $model_val"$'\n'}"
   body="$(get_body "$file")"
 
   cat >> "$WINDSURF_TMP" <<HEREDOC
 
-================================================================================
+===============================
 ## ${name}
 ${description}
-================================================================================
-
+${model_line}===============================
 ${body}
-
 HEREDOC
 }
 
